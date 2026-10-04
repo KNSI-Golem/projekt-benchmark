@@ -1,4 +1,4 @@
-# Optimizer Benchmark Suite [![Flake8 Linting](https://github.com/Dnafivuq/golem_template/actions/workflows/lint.yml/badge.svg)](https://github.com/Dnafivuq/golem_template/actions/workflows/lint.yml) [![Pytest](https://github.com/Dnafivuq/golem_template/actions/workflows/test.yml/badge.svg)](https://github.com/Dnafivuq/golem_template/actions/workflows/test.yml) <a target="_blank" href="https://cookiecutter-data-science.drivendata.org/"><img src="https://img.shields.io/badge/CCDS-Project%20template-328F97?logo=cookiecutter" /></a>
+# Optimizer Benchmark Suite [![CI](https://img.shields.io/github/actions/workflow/status/KNSI-Golem/projekt-benchmark/ci.yml?branch=main&label=CI&logo=githubactions&logoColor=white)](https://github.com/KNSI-Golem/projekt-benchmark/actions/workflows/ci.yml) <a target="_blank" href="https://cookiecutter-data-science.drivendata.org/"><img src="https://img.shields.io/badge/CCDS-Project%20template-328F97?logo=cookiecutter" /></a>
 
 ## 1. Overview
 
