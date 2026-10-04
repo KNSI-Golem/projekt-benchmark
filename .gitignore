@@ -2,6 +2,11 @@
 __pycache__/
 *.py[cod]
 *$py.class
+venv
+data/raw/cifar10
+data/raw/f-mnist
+data/raw/stl10
+data/raw/*.csv
 
 # C extensions
 *.so
@@ -138,6 +143,8 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+secrets.toml
+definitions.json
 
 # Spyder project settings
 .spyderproject
@@ -168,10 +175,47 @@ cython_debug/
 #  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
-#.idea/
+.idea/
 
 # Ruff stuff:
 .ruff_cache/
 
 # PyPI configuration file
 .pypirc
+
+# output files
+outputs/
+
+# user_configs
+user_configs/*.yaml
+reports/
+
+# ---------------------------------------------------------------------------
+# Secrets - never commit. Local dev credentials live in these files.
+# .env.template / .env.example stay tracked as the documented shape.
+# ---------------------------------------------------------------------------
+.env
+.env.*
+!.env.template
+!.env.example
+env
+**/env
+secrets.toml
+**/secrets.toml
+.streamlit/
+**/.streamlit/
+*.pem
+*.key
+*.p12
+credentials.json
+service-account*.json
+.seed-credentials
+
+# Frontend build tooling
+node_modules/
+src/web/frontend/dist/
+.venv-tools/
+.vite/
+*.tsbuildinfo
+egg-info/
+*.egg-info/

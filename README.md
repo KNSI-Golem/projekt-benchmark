@@ -1,107 +1,170 @@
-# KNSI GOLEM Template Repository
-[![Flake8 Linting](https://github.com/Dnafivuq/golem_template/actions/workflows/lint.yml/badge.svg)](https://github.com/Dnafivuq/golem_template/actions/workflows/lint.yml)
-[![Pytest](https://github.com/Dnafivuq/golem_template/actions/workflows/test.yml/badge.svg)](https://github.com/Dnafivuq/golem_template/actions/workflows/test.yml)
-<a target="_blank" href="https://cookiecutter-data-science.drivendata.org/">
-    <img src="https://img.shields.io/badge/CCDS-Project%20template-328F97?logo=cookiecutter" />
-</a>
+# Optimizer Benchmark Suite [![Flake8 Linting](https://github.com/Dnafivuq/golem_template/actions/workflows/lint.yml/badge.svg)](https://github.com/Dnafivuq/golem_template/actions/workflows/lint.yml) [![Pytest](https://github.com/Dnafivuq/golem_template/actions/workflows/test.yml/badge.svg)](https://github.com/Dnafivuq/golem_template/actions/workflows/test.yml) <a target="_blank" href="https://cookiecutter-data-science.drivendata.org/"><img src="https://img.shields.io/badge/CCDS-Project%20template-328F97?logo=cookiecutter" /></a>
 
+## 1. Overview
 
-Template repository for KNSI GOLEM python projects made from the [cookiecutter data science template](https://github.com/drivendataorg/cookiecutter-data-science).
+This repository contains a benchmark suite for testing, comparing, and analyzing various optimization algorithms (e.g., Adam, SGD, CMA-ES, Differential Evolution) on different datasets and neural network models using PyTorch. The framework tracks metrics like gradient evaluations, database reaches, and standard loss/accuracy over time, providing a comprehensive toolkit to evaluate the efficiency and convergence of both gradient-based and gradient-free optimizers. It is designed to be modular and independent dependency-wise, which yields simple addition of custom optimization algorithms, new datasets, and seamless swapping of neural network architectures for cross-comparison.
 
-This repository's goal is to provide out-of-the-box boilerplate code with a clean project file structure.
-Additionally, the template includes a GitHub CI pipeline with pytest and flake8 checks implemented.
+## 2. Installation & Setup
 
+> **Running the web control plane?** See **[docs/LOCAL_SETUP.md](docs/LOCAL_SETUP.md)**.
+> It covers generating your own `.env` (no secret needs to be sent to you),
+> starting the stack, seeding real measured runs, and what does not work
+> without cluster access. The steps below cover the benchmark CLI only.
 
-You are free to delete any unnecessary folders and files. However, it is recommended to maintain the overall file structure to ensure clean code and compatibility with other KNSI GOLEM repositories.
-## What is here?
-### Code and Files Structure
-To ensure a transparent and easily understandable file structure for external users each module, from making plots to training models, is given its respective file in the `src` folder. A full description of the file structure is provided in the [Project Organization](#project-organization) section.
+To get started with this project, follow these steps:
 
+1. **Clone the repository**
 
-**How to run code in repository?**
-```bash
-python3 -m src.dataset
-```
-### Readme
-Another goal of this repository is to provide a [template README](/TEMPLATE_README.md) that can be easily edited and adapted. The README serves as a foundation to help users create their own well-structured documentation, ensuring consistency across all projects within our repository.
+   ```sh
+   git clone <repository-url>
+   cd projekt-benchmark
+   ```
 
-## Additional tips and info
-To further help with development, it is recommended to use useful tools for managing dependencies and environment configurations.
-### venv
-Python's `venv` allows you to easily manage isolated environments for your projects, enabling you to work with specific module/library versions or even different Python versions without conflicting with the globally installed Python interpreter.
+2. **Install dependencies**
 
+   Using **uv** (recommended):
+   ```sh
+   uv sync               # core dependencies
+   uv sync --extra ci    # + flake8, pytest
+   ```
 
-How to use:
-```bash
-python3 -m venv .venv  # Create venv  
-source .venv/bin/activate  # Activate venv  
-pip install -r requirements.txt  # Install requirements to venv  
-```
-Basic Python libraries like pytest are already included in the requirements.
+   Using **pip**:
+   ```sh
+   python -m venv .venv
+   source .venv/bin/activate   # Linux/macOS
+   .venv\Scripts\activate      # Windows
 
----
+   pip install -e .            # core dependencies
+   pip install -e .[ci]        # + flake8, pytest
+   ```
 
-### dotenv
-The dotenv library allows you to define environment constants or secrets, such as API keys, in a single place. It simplifies the management of environment variables by letting you configure them in a `.env` file.
+## 3. Running the Benchmark
 
+You can run benchmarks using the `benchmark_core.optimization_engine.run_benchmark` module.
 
-The `python-dotenv` library has already been added to the requirements.
+### Running a single optimizer
 
-**.env file example:**
-```bash
-API_KEY = "KNSI_GOLEM_API_KEY"
+```sh
+    uv run -m benchmark_core.optimization_engine.run_benchmark --dataset digits --optimizer my_optimizer
 ```
 
-**python code example:**
-```python
-from dotenv import load_dotenv
-import os
+### Comparing multiple optimizers
 
-load_dotenv()
-
-api_key = os.getenv("API_KEY")
+```sh
+    uv run -m benchmark_core.optimization_engine.run_benchmark --dataset heart_disease --optimizer adam sgd cma-es
 ```
 
-## Project Organization
+### Using a specific model architecture
 
+```sh
+    uv run -m benchmark_core.optimization_engine.run_benchmark --dataset digits --model mlp --optimizer adam
 ```
-├── README.md          <- The top-level README for developers using this project.
-├── data
-│   ├── external       <- Data from third party sources.
-│   ├── interim        <- Intermediate data that has been transformed.
-│   ├── processed      <- The final, canonical data sets for modeling.
-│   └── raw            <- The original, immutable data dump.
-│
-├── docs               <- Project's docs
-│
-├── models             <- Trained and serialized models, model predictions, or model summaries
-│
-├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
-│                         the creator's initials, and a short `-` delimited description, e.g.
-│                         `1.0-jqp-initial-data-exploration`.
-│
-├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
-│   └── figures        <- Generated graphics and figures to be used in reporting
-│
-├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
-│                         generated with `pip freeze > requirements.txt`
-│
-├── setup.cfg          <- Configuration file for flake8 and pytest
-│
-└── src   <- Source code for use in this project.
-    │
-    ├── __init__.py             <- Makes src a Python module
-    │
-    ├── config.py               <- Store useful variables and configuration
-    │
-    ├── dataset.py              <- Scripts to download or generate data
-    │
-    ├── features.py             <- Code to create features for modeling
-    │
-    ├── modeling                
-    │   ├── __init__.py 
-    │   ├── predict.py          <- Code to run model inference with trained models          
-    │   └── train.py            <- Code to train models
-    │
-    └── plots.py                <- Code to create visualizations
+
+Add the `--plot` flag to generate comparison and performance plots. By default, they are saved to `reports/model_analysis`.
+
+```sh
+    uv run -m benchmark_core.optimization_engine.run_benchmark --dataset wine_quality --optimizer adam sgd cma-es --max-epochs 10 --max-gradients 100000 --plot
 ```
+
+### Comparing multiple models and optimizers simultaneously
+
+```sh
+	uv run -m benchmark_core.optimization_engine.run_benchmark --dataset digits --model default mlp --optimizer adam sgd cma-es
+```
+
+### Available Arguments/Parameters
+
+- `--dataset`: Name of a dataset registered in `src/benchmark_core/datasets.py` (required). The networks and datasets themselves are not part of this repository, so the choices are whatever has been registered -- see section 6.
+- `--model`: Name of the model architecture to use (e.g., `default`, `mlp`). More than one model can be passed to test all combinations with the given optimizers (default: `['default']`).
+- `--optimizer`: Name of a built-in optimizer (e.g., `adam`, `sgd`, `cma-es`) or a file path to a custom optimizer python script. More than one optimizer can be passed for comparison (required).
+- `--max-gradients`: Stop condition for maximum number of gradient evaluations (default: 5000).
+- `--max-db-reaches`: Stop condition for maximum database reaches (optional).
+- `--max-epochs`: Stop condition for maximum number of epochs (optional).
+- `--batch-size`: Batch size for data loading (default: 32).
+- `--seed`: Random seed for reproducibility (default: 42).
+- `--plot`: Flag to generate benchmark plots after the run.
+- `--plot-dir`: Directory where plots will be saved (default: `reports/model_analysis`).
+
+## 4. Code Structure
+
+```text
+├── README.md              <- The top-level README for developers using this project.
+├── docker-compose.yml     <- The web control plane and the queue services.
+├── docs/LOCAL_SETUP.md    <- Long-form setup, including the secret taxonomy.
+├── downloads/             <- Run artifacts, reachable only through the artifact browser.
+├── reports/               <- Generated plots and analysis artifacts.
+├── scripts/               <- Environment bootstrap, lint baseline, broker definitions.
+├── src/                   <- Source code for use in this project.
+│   ├── benchmark_core/    <- The engine.
+│   │   ├── datasets.py    <- Registry mapping a dataset name to its data and models.
+│   │   ├── metrics/       <- Stop conditions, stop reasons and budget tracking.
+│   │   ├── optimization_engine/  <- Evaluator, runner, optimizer protocols, optimizers.
+│   │   └── plotting/      <- Plot generation and analyzer modules.
+│   ├── db/                <- initdb schemas and forward-only numbered migrations.
+│   ├── frontend/          <- The previous Streamlit interface.
+│   ├── shared/            <- Connectors and interfaces shared by the queue services.
+│   ├── task_queue/        <- Worker, poller and downloader for the compute backend.
+│   └── web/               <- FastAPI control plane and the React SPA it serves.
+├── tools/local_backend/   <- Development-only CPU runner and database seeder.
+└── pyproject.toml         <- Project metadata, dependencies, and tool configuration.
+```
+
+The engine imports as `benchmark_core.*`, which `uv sync` puts on the path by
+installing this project; outside a synced environment put `src/` on
+`PYTHONPATH`.
+
+## 5. Adding a New Optimizer
+
+1. Create a new python script inside `src/benchmark_core/optimization_engine/optimizers/numpy/` (or `cupy/`, e.g., `my_optimizer_adapter.py`).
+2. Create your optimizer class inheriting from `benchmark_core.optimization_engine.optimizer_protocols.NumpyBenchmarkOptimizer`, or from `BenchmarkOptimizer` to declare the array backend yourself.
+3. Implement the `step(self, evaluator: ModelEvaluator) -> bool` method.
+    - Inside `step()`, you can call `evaluator.evaluate_with_grad()` or `evaluator.evaluate()` depending on whether your optimizer needs gradients.
+    - Update `self.params` and finally call `evaluator.set_params(self.params)`.
+    - Return `True` if the optimizer has converged, `False` otherwise.
+4. Add your new optimizer to the `BUILTIN_OPTIMIZERS` registry located in `src/benchmark_core/optimization_engine/optimizers/registry.py`. A CuPy optimizer belongs in the block that is skipped where CuPy does not load, so that a CPU-only host keeps the NumPy entries.
+    - *Alternatively, you can test it directly without registering by passing the path to the file using `--optimizer path/to/my_optimizer_adapter.py`*.
+
+## 6. Adding a New Dataset
+
+The datasets and networks the benchmark runs against are deliberately not in
+this repository, so both registries in `src/benchmark_core/datasets.py` start
+empty and the deployment supplies their contents.
+
+1. Write a callable that returns a PyTorch `Dataset`, wherever the data itself
+   lives.
+2. Register it under the dataset name in `DATA_SETS`:
+
+   ```python
+   from benchmark_core import datasets
+
+   datasets.DATA_SETS["my_dataset_name"] = {"data_set": load_my_dataset}
+   ```
+
+3. Register at least a `"default"` model for it, as in section 7. The runner
+   reads both registries by dataset name and raises if either has no entry.
+
+`--dataset` offers exactly what is registered, so there is no second list to
+keep in step with this one.
+
+## 7. Configuring Model Architectures for a Dataset
+
+To add a new model architecture to an existing dataset or hook up a completely
+new dataset:
+
+1. Create a PyTorch model inheriting from `torch.nn.Module`, next to the
+   dataset it belongs to.
+2. Register it in `MODELS` under the dataset name. The key is what `--model`
+   selects, and `"default"` is what it selects when you do not pass one:
+
+   ```python
+   from benchmark_core import datasets
+
+   datasets.MODELS["my_dataset_name"] = {
+       "default": MyStandardModelClass,
+       "experimental": MyNewModelClass,
+   }
+   ```
+
+3. You can now benchmark this architecture by running
+   `--dataset my_dataset_name --model experimental`.
+
